@@ -7,30 +7,31 @@
 
 import SwiftUI
 
+@Observable
+class Player {
+    var name = "Paul"
+    var highScore = 0
+}
 
+struct HighsScoreView: View {
+    @Environment(Player.self) var player
 
+    var body: some View {
+        @Bindable var player = player
+        Text("Score: \(player.highScore)")
+        Stepper("High score: \(player.highScore)", value: $player.highScore)
+    }
+}
 struct ContentView: View {
 
-    @State private var searchText = ""
-    let allNames = ["Subh", "Vina", "Melvin", "Stefanie"]
+    @State private var player = Player()
     
-    var filtered: [String] {
-        if searchText.isEmpty {
-            allNames
-        } else {
-            allNames.filter { name in
-                name.localizedStandardContains(searchText)
-            }
-        }
-    }
     var body: some View {
-        NavigationStack {
-            List(filtered, id: \.self) { name in
-                Text(name)
-            }
-            .searchable(text: $searchText, prompt: "Look for something")
-            
+        VStack {
+            Text("Welcome")
+            HighsScoreView()
         }
+        .environment(player)
     }
 }
 
