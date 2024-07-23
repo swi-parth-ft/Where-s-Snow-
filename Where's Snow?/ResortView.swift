@@ -11,7 +11,7 @@ struct ResortView: View {
     let resort: Resort
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    
+    @Environment(Favorites.self) var favorites
     
     @State private var selectedFacility: Facility?
     @State private var showingFacility = false
@@ -36,8 +36,6 @@ struct ResortView: View {
                         ResortDetailView(resort: resort)
                         SkiDetailView(resort: resort)
                     }
-                    
-                    
                 }
                 .padding(.vertical)
                 .background(.primary.opacity(0.1))
@@ -57,7 +55,6 @@ struct ResortView: View {
                                 showingFacility = true
                             } label: {
                                 facility.icon
-                                    
                             }
                         }
                     }
@@ -65,6 +62,16 @@ struct ResortView: View {
                 }
                 .padding(.horizontal)
             }
+            
+            Button(favorites.contains(resort) ? "Remove from Favorites" : "Add to Favorites") {
+                if favorites.contains(resort) {
+                    favorites.remove(resort)
+                } else {
+                    favorites.add(resort)
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .padding()
         }
         .navigationTitle("\(resort.name), \(resort.country)")
         .navigationBarTitleDisplayMode(.inline)
@@ -136,4 +143,5 @@ struct ResortDetailView: View {
 
 #Preview {
     ResortView(resort: .example)
+        .environment(Favorites())
 }
