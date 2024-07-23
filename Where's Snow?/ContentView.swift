@@ -9,16 +9,26 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationSplitView(columnVisibility: .constant(.all)) {
+            List {
+                NavigationLink("Primary") {
+                    Text("New View")
+                }
+                
+                NavigationLink("Primary 2") {
+                    Text("New View 2")
+                }
+            }
+        } detail: {
+            Text("Content")
         }
-        .padding()
+        .navigationSplitViewStyle(.prominentDetail)
     }
 }
 
 #Preview {
     ContentView()
+ 
 }
+
+
