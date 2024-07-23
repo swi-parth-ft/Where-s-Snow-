@@ -7,37 +7,46 @@
 
 import SwiftUI
 
-@Observable
-class Player {
-    var name = "Paul"
-    var highScore = 0
-}
 
-struct HighsScoreView: View {
-    @Environment(Player.self) var player
-
-    var body: some View {
-        @Bindable var player = player
-        Text("Score: \(player.highScore)")
-        Stepper("High score: \(player.highScore)", value: $player.highScore)
-    }
-}
 struct ContentView: View {
-
-    @State private var player = Player()
+    
+    let allResorts: [Resort] = Bundle.main.decode("resorts.json")
     
     var body: some View {
-        VStack {
-            Text("Welcome")
-            HighsScoreView()
+        NavigationSplitView {
+            List(allResorts ,id: \.self) { resort in
+                NavigationLink(value: resort) {
+                    HStack {
+                        Image(resort.country)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 40, height: 25)
+                            .clipShape(
+                                .rect(cornerRadius: 5)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 5)
+                                    .stroke(.black, lineWidth: 1)
+                            )
+                        VStack(alignment: .leading) {
+                            Text(resort.name)
+                                .font(.headline)
+                            Text("\(resort.runs) runs")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Resorts")
+        } detail: {
+            Text("Detail")
         }
-        .environment(player)
     }
 }
 
 #Preview {
     ContentView()
- 
+    
 }
 
 
