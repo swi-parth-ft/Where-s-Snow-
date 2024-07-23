@@ -7,35 +7,29 @@
 
 import SwiftUI
 
-struct UserView: View {
-    var body: some View {
-        Group {
-            Text("Paul")
-            Text("From England")
-            Text("Pets: Luna and Arya")
-        }
-        .font(.title)
-    }
-}
+
 
 struct ContentView: View {
 
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @State private var searchText = ""
+    let allNames = ["Subh", "Vina", "Melvin", "Stefanie"]
     
-    var body: some View {
-        if horizontalSizeClass == .compact {
-            VStack(content: UserView.init)
+    var filtered: [String] {
+        if searchText.isEmpty {
+            allNames
         } else {
-            HStack(content: UserView.init)
+            allNames.filter { name in
+                name.localizedStandardContains(searchText)
+            }
         }
-        
-        
-        ViewThatFits {
-            Rectangle()
-                .frame(width: 500, height: 200)
+    }
+    var body: some View {
+        NavigationStack {
+            List(filtered, id: \.self) { name in
+                Text(name)
+            }
+            .searchable(text: $searchText, prompt: "Look for something")
             
-            Circle()
-                .frame(width: 200)
         }
     }
 }
