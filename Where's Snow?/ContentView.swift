@@ -7,22 +7,27 @@
 
 import SwiftUI
 
+struct User: Identifiable {
+    var id = "Paul Hudson"
+}
+
 struct ContentView: View {
+    
+    @State private var selectedUser: User? = nil
+    @State private var isShowingAlert = false
+    
     var body: some View {
-        NavigationSplitView(columnVisibility: .constant(.all)) {
-            List {
-                NavigationLink("Primary") {
-                    Text("New View")
-                }
-                
-                NavigationLink("Primary 2") {
-                    Text("New View 2")
-                }
-            }
-        } detail: {
-            Text("Content")
+        Button("Tap me") {
+            selectedUser = User()
+            isShowingAlert = true
         }
-        .navigationSplitViewStyle(.prominentDetail)
+        .sheet(item: $selectedUser) { user in
+            Text(user.id)
+                .presentationDetents([.medium, .large])
+        }
+        .alert("Welcome", isPresented: $isShowingAlert, presenting: selectedUser) { user in
+            Button(user.id) {}
+        }
     }
 }
 
