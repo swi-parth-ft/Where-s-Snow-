@@ -18,67 +18,76 @@ struct ResortView: View {
     
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                Image(decorative: resort.id)
-                    .resizable()
-                    .scaledToFit()
-                
-                HStack {
-                    if horizontalSizeClass == .compact && dynamicTypeSize > .large {
-                        VStack(spacing: 10) {
-                            ResortDetailView(resort: resort)
-                        }
-                        VStack(spacing: 10) {
-                            SkiDetailView(resort: resort)
-                        }
-                    } else {
-                        ResortDetailView(resort: resort)
-                        SkiDetailView(resort: resort)
-                    }
-                }
-                .padding(.vertical)
-                .background(.primary.opacity(0.1))
-                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-                
-                Group {
-                    Text(resort.description)
-                        .padding(.vertical)
-                    
-                    Text("Fecilities")
-                        .font(.headline)
-                    
-                    HStack {
-                        ForEach(resort.facilityTypes) { facility in
-                            Button {
-                                selectedFacility = facility
-                                showingFacility = true
-                            } label: {
-                                facility.icon
+        NavigationStack {
+            ZStack {
+                LinearGradient(colors: [.white, .white, .cyan], startPoint: .top, endPoint: .bottom)
+                    .ignoresSafeArea()
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Image(decorative: resort.id)
+                            .resizable()
+                            .scaledToFit()
+                        
+                        HStack {
+                            if horizontalSizeClass == .compact && dynamicTypeSize > .large {
+                                VStack(spacing: 10) {
+                                    ResortDetailView(resort: resort)
+                                }
+                                VStack(spacing: 10) {
+                                    SkiDetailView(resort: resort)
+                                }
+                            } else {
+                                ResortDetailView(resort: resort)
+                                SkiDetailView(resort: resort)
                             }
                         }
+                        .padding(.vertical)
+                        .background(.primary.opacity(0.1))
+                        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+                        
+                        Group {
+                            Text(resort.description)
+                                .padding(.vertical)
+                            
+                            Text("Fecilities")
+                                .font(.headline)
+                            
+                            HStack {
+                                ForEach(resort.facilityTypes) { facility in
+                                    Button {
+                                        selectedFacility = facility
+                                        showingFacility = true
+                                    } label: {
+                                        facility.icon
+                                    }
+                                }
+                            }
+                            .padding(.vertical)
+                        }
+                        .padding(.horizontal)
                     }
-                    .padding(.vertical)
+                    
                 }
-                .padding(.horizontal)
-            }
-            
-            Button(favorites.contains(resort) ? "Remove from Favorites" : "Add to Favorites") {
-                if favorites.contains(resort) {
-                    favorites.remove(resort)
-                } else {
-                    favorites.add(resort)
+                .navigationTitle("\(resort.name), \(resort.country)")
+                .navigationBarTitleDisplayMode(.inline)
+                .alert(selectedFacility?.name ?? "More Information", isPresented: $showingFacility, presenting: selectedFacility) { _ in
+                    
+                } message: { facility in
+                    Text(facility.description)
+                }
+                .toolbar {
+                    Button(action: {
+                        if favorites.contains(resort) {
+                            favorites.remove(resort)
+                        } else {
+                            favorites.add(resort)
+                        }
+                    }) {
+                        Image(systemName: favorites.contains(resort) ? "heart.fill" : "heart")
+                            .foregroundColor(favorites.contains(resort) ? .red : .gray)
+                    }
                 }
             }
-            .buttonStyle(.borderedProminent)
-            .padding()
-        }
-        .navigationTitle("\(resort.name), \(resort.country)")
-        .navigationBarTitleDisplayMode(.inline)
-        .alert(selectedFacility?.name ?? "More Information", isPresented: $showingFacility, presenting: selectedFacility) { _ in
-            
-        } message: { facility in
-            Text(facility.description)
         }
     }
 }

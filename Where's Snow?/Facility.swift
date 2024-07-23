@@ -31,13 +31,12 @@ struct Facility: Identifiable {
         if let iconName = icons[name] {
             ZStack {
                 Circle()
-                    .fill(.orange.opacity(0.2))
+                    .fill(.white.opacity(0.6))
                     .frame(width: 50)
                     .shadow(radius: 5)
                 Image(systemName: iconName)
                     .accessibilityLabel(name)
                     .foregroundStyle(.secondary)
-                    .tint(.orange)
                     
             }
         } else {
@@ -56,4 +55,5 @@ struct Facility: Identifiable {
 
 #Preview {
     ResortView(resort: .example)
+        .environment(Favorites())
 }
